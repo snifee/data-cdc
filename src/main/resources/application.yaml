@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: data_cdc
+  debezium:
+    hostname: localhost
+    port: 5432
+    username: postgres
+    password: postgres
+    database: demo_batch
+  datasource:
+    jdbc-url: jdbc:postgresql://localhost:5432/demo_batch
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+    initialization-mode: always
+  mongodb:
+    uri: mongodb://localhost:27017/playground
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+      show-sql: true
