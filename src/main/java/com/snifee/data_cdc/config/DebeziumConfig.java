@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.File;
 
 @Configuration
 public class DebeziumConfig {
@@ -28,13 +27,17 @@ public class DebeziumConfig {
     public io.debezium.config.Configuration transactionConnector(){
 
 
-        File offsetStorageTempFile = new File("offsets_.dat");
+//        File offsetStorageTempFile = new File("offsets_.dat");
 
         return io.debezium.config.Configuration.create()
                 .with("name","transaction-postgres-connector")
                 .with("connector.class", "io.debezium.connector.postgresql.PostgresConnector")
-                .with("offset.storage", "org.apache.kafka.connect.storage.FileOffsetBackingStore")
-                .with("offset.storage.file.filename", offsetStorageTempFile.getAbsolutePath())
+                .with("offset.storage", "io.debezium.storage.jdbc.offset.JdbcOffsetBackingStore")
+                .with("offset.storage.jdbc.connection.url","jdbc:postgresql://localhost:5432/demo_batch")
+                .with("offset.storage.jdbc.table.name", "offset_store")
+                .with("offset.storage.jdbc.connection.user","postgres")
+                .with("offset.storage.jdbc.connection.password","postgres")
+//                .with("offset.storage.file.filename", offsetStorageTempFile.getAbsolutePath())
                 .with("offset.flush.interval.ms", "600000")
                 .with("database.hostname", hostname)
                 .with("database.port", port)
