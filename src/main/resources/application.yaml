@@ -7,6 +7,7 @@ spring:
     username: postgres
     password: postgres
     database: demo_batch
+    offset-storage-jdbc-table-name: offset_store
   datasource:
     jdbc-url: jdbc:postgresql://localhost:5432/demo_batch
     username: postgres

@@ -3,24 +3,14 @@ package com.snifee.data_cdc.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.orm.jpa.JpaTransactionManager;
-import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
+
 
 import javax.sql.DataSource;
 
 
-@Component
-@EnableTransactionManagement
-@EnableJpaRepositories(
-        basePackages = "com.snifee.data_cdc.postgres.repository",
-        entityManagerFactoryRef = "postgresEntityManager",
-        transactionManagerRef = "postgresTransactionManager"
-)
+@Configuration
 public class PostgresDatasourceConfig {
 
 
@@ -35,23 +25,8 @@ public class PostgresDatasourceConfig {
                 .build();
     }
 
-    @Bean(name = "postgresEntityManager")
-    public LocalContainerEntityManagerFactoryBean postgresEntityManager() {
-        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
-        vendorAdapter.setGenerateDdl(true);
-
-        LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
-        factory.setJpaVendorAdapter(vendorAdapter);
-        factory.setPackagesToScan("com.snifee.data_cdc.postresql.entity");
-        factory.setDataSource(postgresDatasource());
-        return factory;
+    @Bean
+    public JdbcTemplate jdbcTemplate(){
+        return new JdbcTemplate(postgresDatasource());
     }
-
-    @Bean(name = "postgresTransactionManager")
-    public PlatformTransactionManager postgresTransactionManager() {
-        JpaTransactionManager txManager = new JpaTransactionManager();
-        txManager.setEntityManagerFactory(postgresEntityManager().getObject());
-        return txManager;
-    }
-
 }
